@@ -1,9 +1,9 @@
-package model;
+package org.example.model;
 
 import lombok.Data;
 
 @Data
-public class Ticket {
+public class Ticket implements Entity {
     private long id;
     private Event event;
     private User user;

@@ -1,13 +1,13 @@
-package facade;
+package org.example.facade;
 
 import lombok.RequiredArgsConstructor;
-import model.Event;
-import model.Ticket;
-import model.TicketCategory;
-import model.User;
-import service.EventService;
-import service.TicketService;
-import service.UserService;
+import org.example.model.Event;
+import org.example.model.Ticket;
+import org.example.model.TicketCategory;
+import org.example.model.User;
+import org.example.service.EventService;
+import org.example.service.TicketService;
+import org.example.service.UserService;
 
 import java.util.Date;
 import java.util.List;

@@ -1,6 +1,6 @@
-package service;
+package org.example.service;
 
-import model.Event;
+import org.example.model.Event;
 
 import java.util.Date;
 import java.util.List;
