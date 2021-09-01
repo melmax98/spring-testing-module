@@ -24,9 +24,9 @@ public class EventDao implements Dao {
     @Override
     public Event save(Entity entity) {
         Event event = (Event) entity;
-        String entityName = EVENT_TITLE + event.getId();
+        String entityKey = EVENT_TITLE + event.getId();
 
-        getStorage().put(entityName, event);
+        getStorage().put(entityKey, event);
         return event;
     }
 
