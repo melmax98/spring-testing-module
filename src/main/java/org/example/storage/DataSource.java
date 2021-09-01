@@ -7,6 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public class Database {
+public class DataSource {
     private final Map<String, Entity> storage = new HashMap<>();
 }

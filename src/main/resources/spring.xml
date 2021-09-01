@@ -5,7 +5,7 @@
            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="database"
-          class="org.example.storage.Database">
+          class="org.example.storage.DataSource">
     </bean>
 
 </beans>
