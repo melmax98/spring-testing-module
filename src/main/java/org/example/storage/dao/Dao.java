@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface Dao {
-    org.example.model.Entity save(org.example.model.Entity entity);
+    Entity save(org.example.model.Entity entity);
 
-    org.example.model.Entity update(org.example.model.Entity entity);
+    Entity update(org.example.model.Entity entity);
 
     boolean delete(long entityId);
 
