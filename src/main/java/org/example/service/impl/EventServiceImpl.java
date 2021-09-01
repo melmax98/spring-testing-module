@@ -1,7 +1,8 @@
-package org.example.service;
+package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.model.Event;
+import org.example.service.EventService;
 import org.example.storage.dao.EventDao;
 
 import java.util.Date;
