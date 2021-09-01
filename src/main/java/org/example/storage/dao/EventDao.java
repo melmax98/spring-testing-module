@@ -27,8 +27,6 @@ public class EventDao implements Dao {
         return event;
     }
 
-
-    //maybe without creation of new object
     @Override
     public Event update(Entity entity) {
         Event event = getEventById(((Event) entity).getId());
@@ -38,14 +36,11 @@ public class EventDao implements Dao {
             return null;
         }
 
-        Event updatedEvent = new Event();
-        updatedEvent.setId(event.getId());
-        updatedEvent.setTitle(event.getTitle());
-        updatedEvent.setDate(event.getDate());
+        event.setId(event.getId());
+        event.setTitle(event.getTitle());
+        event.setDate(event.getDate());
 
-        delete(event.getId());
-
-        return save(updatedEvent);
+        return save(event);
     }
 
     @Override
@@ -82,6 +77,8 @@ public class EventDao implements Dao {
                 .filter(event -> title.equals(((Event) event).getTitle()))
                 .collect(Collectors.toList());
 
+        //check null, logg, return
+
         return getEventsPage(pageSize, pageNum, matchingEvents);
     }
 
@@ -94,11 +91,15 @@ public class EventDao implements Dao {
                 .filter(event -> dateTimeComparator.compare(day, ((Event) event).getDate()) == 0)
                 .collect(Collectors.toList());
 
+        //check null, logg, return
+
         return getEventsPage(pageSize, pageNum, matchingEvents);
     }
 
     private List<Event> getEventsPage(int pageSize, int pageNum, List<Entity> matchingEvents) {
         List<Entity> page = getPage(matchingEvents, pageNum, pageSize);
+
+        //check null, logg, return
 
         return page
                 .stream()
