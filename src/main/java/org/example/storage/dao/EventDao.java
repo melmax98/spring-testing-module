@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.model.Entity;
 import org.example.model.Event;
 import org.example.storage.DataSource;
-import org.example.storage.EntityNotFoundException;
+import org.joda.time.DateTimeComparator;
 
 import java.util.Date;
 import java.util.List;
@@ -21,20 +21,44 @@ public class EventDao implements Dao {
     @Override
     public Event save(Entity entity) {
         Event event = (Event) entity;
-        String entityName =  EVENT_TITLE + event.getId();
+        String entityName = EVENT_TITLE + event.getId();
 
         getStorage().put(entityName, event);
         return event;
     }
 
+
+    //maybe without creation of new object
     @Override
     public Event update(Entity entity) {
-        return null;
+        Event event = getEventById(((Event) entity).getId());
+
+        if (event == null) {
+            //logg
+            return null;
+        }
+
+        Event updatedEvent = new Event();
+        updatedEvent.setId(event.getId());
+        updatedEvent.setTitle(event.getTitle());
+        updatedEvent.setDate(event.getDate());
+
+        delete(event.getId());
+
+        return save(updatedEvent);
     }
 
     @Override
     public boolean delete(long eventId) {
-        return false;
+        Event event = getEventById(eventId);
+
+        if (event == null) {
+            //logg
+            return false;
+        }
+
+        getStorage().remove(EVENT_TITLE + eventId);
+        return true;
     }
 
     public Event getEventById(long eventId) {
@@ -42,7 +66,12 @@ public class EventDao implements Dao {
                 .stream()
                 .filter((EVENT_TITLE + eventId)::equals)
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Event with id " + eventId + " not found"));
+                .orElse(null);
+
+        if (key == null) {
+            //logg
+            return null;
+        }
         return (Event) getStorage().get(key);
     }
 
@@ -53,16 +82,28 @@ public class EventDao implements Dao {
                 .filter(event -> title.equals(((Event) event).getTitle()))
                 .collect(Collectors.toList());
 
+        return getEventsPage(pageSize, pageNum, matchingEvents);
+    }
+
+    public List<Event> getEventsForDay(Date day, int pageSize, int pageNum) {
+        DateTimeComparator dateTimeComparator = DateTimeComparator.getDateOnlyInstance();
+
+        List<Entity> matchingEvents = getStorage().values()
+                .stream()
+                .filter(Event.class::isInstance)
+                .filter(event -> dateTimeComparator.compare(day, ((Event) event).getDate()) == 0)
+                .collect(Collectors.toList());
+
+        return getEventsPage(pageSize, pageNum, matchingEvents);
+    }
+
+    private List<Event> getEventsPage(int pageSize, int pageNum, List<Entity> matchingEvents) {
         List<Entity> page = getPage(matchingEvents, pageNum, pageSize);
 
         return page
                 .stream()
                 .map(Event.class::cast)
                 .collect(Collectors.toList());
-    }
-
-    public List<Event> getEventsForDay(Date day, int pageSize, int pageNum) {
-        return null;
     }
 
     @Override
