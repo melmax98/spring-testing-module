@@ -4,8 +4,18 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="database"
+    <bean id="dataSource"
           class="org.example.storage.DataSource">
+    </bean>
+
+    <bean id="eventDao"
+          class="org.example.storage.dao.EventDao">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean id="eventService"
+          class="org.example.service.impl.EventServiceImpl">
+        <constructor-arg ref="eventDao"/>
     </bean>
 
 </beans>
