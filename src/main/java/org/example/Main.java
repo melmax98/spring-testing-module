@@ -14,13 +14,17 @@ public class Main {
     public static void main(String[] args) {
         ApplicationContext context =
                 new ClassPathXmlApplicationContext("spring.xml");
-        Event event = new Event();
-        event.setId(1);
-        event.setDate(new Date());
-        event.setTitle("New");
 
         EventService eventService = (EventService) context.getBean("eventService");
-        eventService.createEvent(event);
-        System.out.println(eventService.getEventById(1));
+
+        for (int i = 1; i <= 30; i++) {
+            Event event = new Event();
+            event.setId(i);
+            event.setDate(new Date());
+            event.setTitle("New");
+            eventService.createEvent(event);
+        }
+
+        System.out.println(eventService.getEventsByTitle("New", 15, 3).size());
     }
 }

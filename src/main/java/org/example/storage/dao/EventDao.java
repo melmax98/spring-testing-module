@@ -9,6 +9,7 @@ import org.example.storage.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class EventDao implements Dao {
@@ -40,12 +41,24 @@ public class EventDao implements Dao {
         String key = getStorage().keySet()
                 .stream()
                 .filter((EVENT_TITLE + eventId)::equals)
-                .findFirst().orElseThrow(() -> new EntityNotFoundException("Event with id " + eventId + " not found"));
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Event with id " + eventId + " not found"));
         return (Event) getStorage().get(key);
     }
 
     public List<Event> getEventsByTitle(String title, int pageSize, int pageNum) {
-        return null;
+        List<Entity> matchingEvents = getStorage().values()
+                .stream()
+                .filter(Event.class::isInstance)
+                .filter(event -> title.equals(((Event) event).getTitle()))
+                .collect(Collectors.toList());
+
+        List<Entity> page = getPage(matchingEvents, pageNum, pageSize);
+
+        return page
+                .stream()
+                .map(Event.class::cast)
+                .collect(Collectors.toList());
     }
 
     public List<Event> getEventsForDay(Date day, int pageSize, int pageNum) {
