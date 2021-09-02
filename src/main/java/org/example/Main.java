@@ -1,7 +1,11 @@
 package org.example;
 
 import org.example.model.Event;
+import org.example.model.TicketCategory;
+import org.example.model.User;
 import org.example.service.EventService;
+import org.example.service.TicketService;
+import org.example.service.UserService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -16,15 +20,20 @@ public class Main {
                 new ClassPathXmlApplicationContext("spring.xml");
 
         EventService eventService = (EventService) context.getBean("eventService");
+        UserService userService = (UserService) context.getBean("userService");
+        TicketService ticketService = (TicketService) context.getBean("ticketService");
 
-        for (int i = 1; i <= 30; i++) {
-            Event event = new Event();
-            event.setId(i);
-            event.setDate(new Date());
-            event.setTitle("New");
-            eventService.createEvent(event);
-        }
+        Event event = new Event(1, "New event", new Date());
+        User user = new User(1, "John", "john@mail.com");
 
-        System.out.println(eventService.getEventsByTitle("New", 15, 3).size());
+        eventService.createEvent(event);
+        userService.createUser(user);
+
+        System.out.println(ticketService.bookTicket(1, 1, 1, TicketCategory.BAR));
+        System.out.println(ticketService.getBookedTickets(user, 1, 1));
+        System.out.println(ticketService.getBookedTickets(event, 1, 1));
+        ticketService.cancelTicket(1);
+        System.out.println(ticketService.getBookedTickets(user, 1, 1));
+        System.out.println(ticketService.getBookedTickets(event, 1, 1));
     }
 }

@@ -18,4 +18,25 @@
         <constructor-arg ref="eventDao"/>
     </bean>
 
+    <bean id="userDao"
+          class="org.example.storage.dao.UserDao">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean id="userService"
+          class="org.example.service.impl.UserServiceImpl">
+        <constructor-arg ref="userDao"/>
+    </bean>
+
+    <bean id="ticketDao"
+          class="org.example.storage.dao.TicketDao">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean id="ticketService"
+          class="org.example.service.impl.TicketServiceImpl">
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="eventService"/>
+        <constructor-arg ref="ticketDao"/>
+    </bean>
 </beans>
