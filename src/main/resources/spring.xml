@@ -41,4 +41,11 @@
         <property name="userService" ref="userService"/>
         <property name="eventService" ref="eventService"/>
     </bean>
+
+    <bean id="bookingFacade"
+          class="org.example.facade.BookingFacadeImpl">
+        <constructor-arg ref="eventService"/>
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="ticketService"/>
+    </bean>
 </beans>
