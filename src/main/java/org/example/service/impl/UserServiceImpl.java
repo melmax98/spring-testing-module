@@ -1,16 +1,16 @@
 package org.example.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.example.model.User;
 import org.example.service.UserService;
 import org.example.storage.dao.UserDao;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public User getUserById(long userId) {

@@ -1,6 +1,6 @@
 package org.example.storage.dao;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.Entity;
 import org.example.model.Event;
@@ -14,10 +14,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-@RequiredArgsConstructor
 public class EventDao implements Dao {
 
-    private final DataSource dataSource;
+    @Setter
+    private DataSource dataSource;
 
     private static final String EVENT_TITLE = "event:";
 

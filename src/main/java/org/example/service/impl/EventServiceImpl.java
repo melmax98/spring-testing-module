@@ -1,17 +1,17 @@
 package org.example.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.example.model.Event;
 import org.example.service.EventService;
 import org.example.storage.dao.EventDao;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
 
-@RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
-    private final EventDao eventDao;
+    @Autowired
+    private EventDao eventDao;
 
     @Override
     public Event getEventById(long eventId) {
