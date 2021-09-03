@@ -38,15 +38,15 @@ public class DataSource {
         try (FileReader reader = new FileReader(dataFilePath); BufferedReader bufferedReader = new BufferedReader(reader)) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                if (line.contains("ticketId")) {
+                if (line.contains("event") && line.contains("user")) {
                     Ticket ticket = gson.fromJson(line, Ticket.class);
                     bookingFacade.createTicket(ticket);
                     log.info("Ticket from file was created.");
-                } else if (line.contains("userId")) {
+                } else if (line.contains("name")) {
                     User user = gson.fromJson(line, User.class);
                     bookingFacade.createUser(user);
                     log.info("User from file was created.");
-                } else if (line.contains("eventId")) {
+                } else if (line.contains("title")) {
                     Event event = gson.fromJson(line, Event.class);
                     bookingFacade.createEvent(event);
                     log.info("Event from file was created.");

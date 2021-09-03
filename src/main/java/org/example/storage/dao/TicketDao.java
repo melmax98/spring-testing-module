@@ -22,12 +22,7 @@ public class TicketDao implements Dao {
     private static final String TICKET_TITLE = "ticket:";
 
     public Ticket bookTicket(User user, Event event, int place, TicketCategory category) {
-        List<Ticket> allTickets = getAllTickets();
-        long lastTicketId = allTickets
-                .stream()
-                .mapToLong(Ticket::getTicketId)
-                .max()
-                .orElse(0L);
+        long lastTicketId = getLastTicketId();
 
         Ticket ticket = new Ticket();
         ticket.setTicketId(lastTicketId + 1);
@@ -39,9 +34,21 @@ public class TicketDao implements Dao {
         return save(ticket);
     }
 
+    private long getLastTicketId() {
+        List<Ticket> allTickets = getAllTickets();
+        return allTickets
+                .stream()
+                .mapToLong(Ticket::getTicketId)
+                .max()
+                .orElse(0L);
+    }
+
     @Override
     public Ticket save(Entity entity) {
+        long lastTicketId = getLastTicketId();
+
         Ticket ticket = (Ticket) entity;
+        ticket.setTicketId(lastTicketId + 1);
         String entityKey = TICKET_TITLE + ticket.getTicketId();
 
         getStorage().put(entityKey, ticket);

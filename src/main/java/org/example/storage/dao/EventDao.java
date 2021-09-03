@@ -23,7 +23,16 @@ public class EventDao implements Dao {
 
     @Override
     public Event save(Entity entity) {
+        long lastEventId = getStorage().values()
+                .stream()
+                .filter(Event.class::isInstance)
+                .map(Event.class::cast)
+                .mapToLong(Event::getEventId)
+                .max()
+                .orElse(0L);
+
         Event event = (Event) entity;
+        event.setEventId(lastEventId + 1);
         String entityKey = EVENT_TITLE + event.getEventId();
 
         getStorage().put(entityKey, event);

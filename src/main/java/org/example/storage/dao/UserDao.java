@@ -22,7 +22,16 @@ public class UserDao implements Dao {
 
     @Override
     public User save(Entity entity) {
+        long lastUserId = getStorage().values()
+                .stream()
+                .filter(User.class::isInstance)
+                .map(User.class::cast)
+                .mapToLong(User::getUserId)
+                .max()
+                .orElse(0L);
+
         User user = (User) entity;
+        user.setUserId(lastUserId + 1);
         String entityKey = USER_TITLE + user.getUserId();
 
         getStorage().put(entityKey, user);
