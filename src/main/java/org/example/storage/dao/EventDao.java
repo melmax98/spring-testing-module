@@ -52,7 +52,9 @@ public class EventDao implements Dao {
         event.setTitle(event.getTitle());
         event.setDate(event.getDate());
 
-        return save(event);
+        String entityKey = EVENT_TITLE + event.getEventId();
+        getStorage().put(entityKey, event);
+        return event;
     }
 
     @Override

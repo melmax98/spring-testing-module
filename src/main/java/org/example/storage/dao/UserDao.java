@@ -51,7 +51,10 @@ public class UserDao implements Dao {
         user.setName(user.getName());
         user.setEmail(user.getEmail());
 
-        return save(user);
+        String entityKey = USER_TITLE + user.getUserId();
+        getStorage().put(entityKey, user);
+
+        return user;
     }
 
     @Override
