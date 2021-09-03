@@ -26,6 +26,11 @@ public class TicketServiceImpl implements TicketService {
     private TicketDao ticketDao;
 
     @Override
+    public Ticket createTicket(Ticket ticket) {
+        return ticketDao.save(ticket);
+    }
+
+    @Override
     public Ticket bookTicket(long userId, long eventId, int place, TicketCategory category) {
         User user = userService.getUserById(userId);
         Event event = eventService.getEventById(eventId);

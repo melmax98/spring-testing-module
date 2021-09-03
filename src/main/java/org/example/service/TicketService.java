@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface TicketService {
 
+    Ticket createTicket(Ticket ticket);
+
     Ticket bookTicket(long userId, long eventId, int place, TicketCategory category);
 
     List<Ticket> getBookedTickets(User user, int pageSize, int pageNum);

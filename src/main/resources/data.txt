@@ -1,0 +1,3 @@
+{"eventId":1,"title":"New event","date":"2021-09-09"}
+{"userId":1,"name":"John","email":"john@mail.com"}
+{"ticketId":1,"event":{"eventId":1,"title":"New event","date":"2021-09-09"},"user":{"userId":1,"name":"John","email":"john@mail.com"},"category":"BAR","placeNumber":1}

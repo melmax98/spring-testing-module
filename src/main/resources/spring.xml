@@ -12,6 +12,7 @@
 
     <bean id="dataSource"
           class="org.example.storage.DataSource">
+        <property name="bookingFacade" ref="bookingFacade"/>
     </bean>
 
     <bean id="eventDao"

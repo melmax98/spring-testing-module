@@ -80,6 +80,11 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
+    public Ticket createTicket(Ticket ticket) {
+        return ticketService.createTicket(ticket);
+    }
+
+    @Override
     public Ticket bookTicket(long userId, long eventId, int place, TicketCategory category) {
         return ticketService.bookTicket(userId, eventId, place, category);
     }

@@ -23,7 +23,7 @@ public class UserDao implements Dao {
     @Override
     public User save(Entity entity) {
         User user = (User) entity;
-        String entityKey = USER_TITLE + user.getId();
+        String entityKey = USER_TITLE + user.getUserId();
 
         getStorage().put(entityKey, user);
         return user;
@@ -31,14 +31,14 @@ public class UserDao implements Dao {
 
     @Override
     public User update(Entity entity) {
-        User user = getUserById(((User) entity).getId());
+        User user = getUserById(((User) entity).getUserId());
 
         if (user == null) {
-            log.warn("Could not update the user with id {} because it does not exist", ((User) entity).getId());
+            log.warn("Could not update the user with id {} because it does not exist", ((User) entity).getUserId());
             return null;
         }
 
-        user.setId(user.getId());
+        user.setUserId(user.getUserId());
         user.setName(user.getName());
         user.setEmail(user.getEmail());
 

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Entity {
-    private long id;
+    private long userId;
     private String name;
     private String email;
 }

@@ -24,7 +24,7 @@ public class EventDao implements Dao {
     @Override
     public Event save(Entity entity) {
         Event event = (Event) entity;
-        String entityKey = EVENT_TITLE + event.getId();
+        String entityKey = EVENT_TITLE + event.getEventId();
 
         getStorage().put(entityKey, event);
         return event;
@@ -32,14 +32,14 @@ public class EventDao implements Dao {
 
     @Override
     public Event update(Entity entity) {
-        Event event = getEventById(((Event) entity).getId());
+        Event event = getEventById(((Event) entity).getEventId());
 
         if (event == null) {
-            log.warn("Could not update the event with id {} because it does not exist", ((Event) entity).getId());
+            log.warn("Could not update the event with id {} because it does not exist", ((Event) entity).getEventId());
             return null;
         }
 
-        event.setId(event.getId());
+        event.setEventId(event.getEventId());
         event.setTitle(event.getTitle());
         event.setDate(event.getDate());
 

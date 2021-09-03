@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Ticket implements Entity {
-    private long id;
+    private long ticketId;
     private Event event;
     private User user;
     private TicketCategory category;

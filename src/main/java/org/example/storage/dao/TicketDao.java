@@ -25,12 +25,12 @@ public class TicketDao implements Dao {
         List<Ticket> allTickets = getAllTickets();
         long lastTicketId = allTickets
                 .stream()
-                .mapToLong(Ticket::getId)
+                .mapToLong(Ticket::getTicketId)
                 .max()
                 .orElse(0L);
 
         Ticket ticket = new Ticket();
-        ticket.setId(lastTicketId + 1);
+        ticket.setTicketId(lastTicketId + 1);
         ticket.setUser(user);
         ticket.setEvent(event);
         ticket.setPlaceNumber(place);
@@ -42,7 +42,7 @@ public class TicketDao implements Dao {
     @Override
     public Ticket save(Entity entity) {
         Ticket ticket = (Ticket) entity;
-        String entityKey = TICKET_TITLE + ticket.getId();
+        String entityKey = TICKET_TITLE + ticket.getTicketId();
 
         getStorage().put(entityKey, ticket);
         return ticket;

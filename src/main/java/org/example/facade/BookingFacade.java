@@ -1,8 +1,8 @@
 package org.example.facade;
 
-import org.example.model.TicketCategory;
 import org.example.model.Event;
 import org.example.model.Ticket;
+import org.example.model.TicketCategory;
 import org.example.model.User;
 
 import java.util.Date;
@@ -98,16 +98,26 @@ public interface BookingFacade {
 
     /**
      * Deletes user by its id.
+     *
      * @param userId User id.
      * @return Flag that shows whether user has been deleted.
      */
     boolean deleteUser(long userId);
 
     /**
+     * Creates new ticket. Ticket id should be auto-generated.
+     *
+     * @param ticket Ticket data.
+     * @return Created Ticket object.
+     */
+    Ticket createTicket(Ticket ticket);
+
+    /**
      * Book ticket for a specified event on behalf of specified user.
-     * @param userId User Id.
-     * @param eventId Event Id.
-     * @param place Place number.
+     *
+     * @param userId   User Id.
+     * @param eventId  Event Id.
+     * @param place    Place number.
      * @param category Service category.
      * @return Booked ticket object.
      * @throws java.lang.IllegalStateException if this place has already been booked.
