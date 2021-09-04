@@ -8,6 +8,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Entity {
+
+    public User(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
     private long userId;
     private String name;
     private String email;

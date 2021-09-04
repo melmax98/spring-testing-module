@@ -10,6 +10,12 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Event implements Entity {
+
+    public Event(String title, Date date) {
+        this.title = title;
+        this.date = date;
+    }
+
     private long eventId;
     private String title;
     private Date date;
