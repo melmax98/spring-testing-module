@@ -2,6 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
    http://www.springframework.org/schema/beans/spring-beans.xsd
    http://www.springframework.org/schema/context
@@ -10,51 +12,45 @@
     <context:property-placeholder location="classpath:application.properties"/>
     <context:annotation-config/>
 
-    <bean id="dataSource"
-          class="org.example.storage.DataSource">
-        <property name="dataSaver" ref="dataSaver"/>
-    </bean>
+    <bean id="dataSource" class="org.example.storage.DataSource"
+          p:dataSaver-ref="dataSaver"
+    />
 
-    <bean id="dataSaver"
-          class="org.example.storage.DataSaver">
-        <property name="userDao" ref="userDao"/>
-        <property name="eventDao" ref="eventDao"/>
-        <property name="ticketDao" ref="ticketDao"/>
-    </bean>
+    <bean id="dataSaver" class="org.example.storage.DataSaver"
+          p:userDao-ref="userDao"
+          p:eventDao-ref="eventDao"
+          p:ticketDao-ref="ticketDao"
+    />
 
-    <bean id="eventDao"
-          class="org.example.storage.dao.EventDao">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+    <bean id="eventDao" class="org.example.storage.dao.EventDao"
+          p:dataSource-ref="dataSource"
+    />
 
     <bean id="eventService"
-          class="org.example.service.impl.EventServiceImpl">
-    </bean>
+          class="org.example.service.impl.EventServiceImpl"
+    />
 
-    <bean id="userDao"
-          class="org.example.storage.dao.UserDao">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+    <bean id="userDao" class="org.example.storage.dao.UserDao"
+          p:dataSource-ref="dataSource"
+    />
 
     <bean id="userService"
-          class="org.example.service.impl.UserServiceImpl">
-    </bean>
+          class="org.example.service.impl.UserServiceImpl"
+    />
 
     <bean id="ticketDao"
-          class="org.example.storage.dao.TicketDao">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+          class="org.example.storage.dao.TicketDao"
+          p:dataSource-ref="dataSource"
+    />
 
-    <bean id="ticketService"
-          class="org.example.service.impl.TicketServiceImpl">
-        <property name="userService" ref="userService"/>
-        <property name="eventService" ref="eventService"/>
-    </bean>
+    <bean id="ticketService" class="org.example.service.impl.TicketServiceImpl"
+          p:userService-ref="userService"
+          p:eventService-ref="eventService"
+    />
 
-    <bean id="bookingFacade"
-          class="org.example.facade.BookingFacadeImpl">
-        <constructor-arg ref="eventService"/>
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="ticketService"/>
-    </bean>
+    <bean id="bookingFacade" class="org.example.facade.BookingFacadeImpl"
+          c:eventService-ref="eventService"
+          c:userService-ref="userService"
+          c:ticketService-ref="ticketService"
+    />
 </beans>
