@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.example.facade.BookingFacade;
 import org.example.model.Entity;
 import org.example.model.Event;
 import org.example.model.Ticket;
@@ -20,15 +19,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Getter
 public class DataSource {
 
     @Value("${data.filepath}")
     private String dataFilePath;
 
     @Setter
-    private BookingFacade bookingFacade;
+    private DataSaver dataSaver;
 
+    @Getter
     private final Map<String, Entity> storage = new HashMap<>();
 
     @PostConstruct
@@ -40,15 +39,15 @@ public class DataSource {
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.contains("event") && line.contains("user")) {
                     Ticket ticket = gson.fromJson(line, Ticket.class);
-                    bookingFacade.createTicket(ticket);
+                    dataSaver.createTicket(ticket);
                     log.info("Ticket from file was created.");
                 } else if (line.contains("name")) {
                     User user = gson.fromJson(line, User.class);
-                    bookingFacade.createUser(user);
+                    dataSaver.createUser(user);
                     log.info("User from file was created.");
                 } else if (line.contains("title")) {
                     Event event = gson.fromJson(line, Event.class);
-                    bookingFacade.createEvent(event);
+                    dataSaver.createEvent(event);
                     log.info("Event from file was created.");
                 } else {
                     log.warn("Wrong format of data");

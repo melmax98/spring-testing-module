@@ -12,7 +12,14 @@
 
     <bean id="dataSource"
           class="org.example.storage.DataSource">
-        <property name="bookingFacade" ref="bookingFacade"/>
+        <property name="dataSaver" ref="dataSaver"/>
+    </bean>
+
+    <bean id="dataSaver"
+          class="org.example.storage.DataSaver">
+        <property name="userDao" ref="userDao"/>
+        <property name="eventDao" ref="eventDao"/>
+        <property name="ticketDao" ref="ticketDao"/>
     </bean>
 
     <bean id="eventDao"
