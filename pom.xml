@@ -7,6 +7,7 @@
     <groupId>org.example</groupId>
     <artifactId>spring-mvc-module</artifactId>
     <packaging>war</packaging>
+    <name>spring-mvc-example</name>
     <version>1.0-SNAPSHOT</version>
 
     <properties>

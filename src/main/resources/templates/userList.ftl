@@ -10,11 +10,12 @@
         <th></th>
         </thead>
         <tbody>
-        <#list usersByName as user>
+        <#list users as user>
             <tr>
                 <td>${user.getUserId()}</td>
                 <td>${user.getName()}</td>
                 <td>${user.getEmail()}</td>
+                <td><a href="/user/${user.getUserId()}">edit</a></td>
             </tr>
         </#list>
         </tbody>
