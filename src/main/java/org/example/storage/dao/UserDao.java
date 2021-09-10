@@ -7,6 +7,7 @@ import org.example.model.User;
 import org.example.storage.DataSource;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +105,9 @@ public class UserDao implements Dao {
         List<Entity> matchingUsers = getStorage().values()
                 .stream()
                 .filter(User.class::isInstance)
-                .filter(user -> name.equals(((User) user).getName()))
+                .map(User.class::cast)
+                .filter(user -> name.equals(user.getName()))
+                .sorted(Comparator.comparing(User::getUserId))
                 .collect(Collectors.toList());
 
         if (matchingUsers.isEmpty()) {
