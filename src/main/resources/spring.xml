@@ -23,7 +23,7 @@
           p:ticketDao-ref="ticketDao"
     />
 
-    <bean id="eventDao" class="org.example.storage.dao.EventDao"
+    <bean id="eventDao" depends-on="dataSource" class="org.example.storage.dao.EventDao"
           p:dataSource-ref="dataSource"
     />
 
