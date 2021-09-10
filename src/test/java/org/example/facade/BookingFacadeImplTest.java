@@ -95,7 +95,7 @@ public class BookingFacadeImplTest {
         assertEquals(new Date(1), updatedEvent.getDate());
 
         assertTrue(bookingFacade.deleteEvent(updatedEvent.getEventId()));
-        assertNull(bookingFacade.getUserById(updatedEvent.getEventId()));
+        assertNull(bookingFacade.getEventById(updatedEvent.getEventId()));
     }
 
     @Test
