@@ -19,4 +19,6 @@ public interface TicketService {
 
     boolean cancelTicket(long ticketId);
 
+    Ticket getTicketById(long ticketId);
+
 }

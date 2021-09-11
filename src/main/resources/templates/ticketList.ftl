@@ -1,5 +1,5 @@
 <head>
-    <title>List of events</title>
+    <title>List of tickets</title>
     <style>
         table {
             border-collapse: collapse;
@@ -28,23 +28,27 @@
 </head>
 
 <div id="header">
-    <h2>List of events</h2>
+    <h2>List of tickets</h2>
 </div>
 <div id="content">
     <table>
         <thead>
         <th>ID</th>
-        <th>Title</th>
-        <th>Date</th>
+        <th>User</th>
+        <th>Event</th>
+        <th>Category</th>
+        <th>Place</th>
         <th></th>
         </thead>
         <tbody>
-        <#list events as event>
+        <#list tickets as ticket>
             <tr>
-                <td>${event.getEventId()}</td>
-                <td>${event.getTitle()}</td>
-                <td>${event.getDate()?date}</td>
-                <td><a href="/event/${event.getEventId()}">edit</a></td>
+                <td>${ticket.getTicketId()}</td>
+                <td>${ticket.getUser()}</td>
+                <td>${ticket.getEvent()}</td>
+                <td>${ticket.getCategory()}</td>
+                <td>${ticket.getPlaceNumber()}</td>
+                <td><a href="/ticket/${ticket.getTicketId()}">cancel</a></td>
             </tr>
         </#list>
         </tbody>

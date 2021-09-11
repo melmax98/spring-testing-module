@@ -1,3 +1,32 @@
+<head>
+    <title>List of users</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 8px;
+        }
+
+        h2 {
+            font: 2rem 'AmstelvarAlpha', sans-serif;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
+
+        th {
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+
 <div id="header">
     <h2>List of users</h2>
 </div>

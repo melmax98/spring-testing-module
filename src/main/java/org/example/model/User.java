@@ -17,4 +17,9 @@ public class User implements Entity {
     private long userId;
     private String name;
     private String email;
+
+    @Override
+    public String toString() {
+        return userId + " " + name + " " + email;
+    }
 }

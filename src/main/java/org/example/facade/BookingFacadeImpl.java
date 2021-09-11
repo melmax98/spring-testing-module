@@ -25,6 +25,21 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
+    public Ticket getTicketById(long ticketId) {
+        return ticketService.getTicketById(ticketId);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @Override
+    public List<Event> getAllEvents() {
+        return eventService.getAllEvents();
+    }
+
+    @Override
     public List<Event> getEventsByTitle(String title, int pageSize, int pageNum) {
         return eventService.getEventsByTitle(title, pageSize, pageNum);
     }

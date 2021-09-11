@@ -126,4 +126,13 @@ public class UserDao implements Dao {
                 .map(User.class::cast)
                 .collect(Collectors.toList());
     }
+
+    public List<User> getAllUsers() {
+        return getStorage().values()
+                .stream()
+                .filter(User.class::isInstance)
+                .map(User.class::cast)
+                .sorted(Comparator.comparing(User::getUserId))
+                .collect(Collectors.toList());
+    }
 }

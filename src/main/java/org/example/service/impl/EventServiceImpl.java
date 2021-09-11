@@ -42,4 +42,9 @@ public class EventServiceImpl implements EventService {
     public boolean deleteEvent(long eventId) {
         return eventDao.delete(eventId);
     }
+
+    @Override
+    public List<Event> getAllEvents() {
+        return eventDao.getAllEvents();
+    }
 }

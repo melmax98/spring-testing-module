@@ -134,4 +134,13 @@ public class EventDao implements Dao {
     public Map<String, Entity> getStorage() {
         return dataSource.getStorage();
     }
+
+    public List<Event> getAllEvents() {
+        return getStorage().values()
+                .stream()
+                .filter(Event.class::isInstance)
+                .map(Event.class::cast)
+                .sorted(Comparator.comparing(Event::getEventId))
+                .collect(Collectors.toList());
+    }
 }

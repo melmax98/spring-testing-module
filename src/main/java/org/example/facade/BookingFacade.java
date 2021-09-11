@@ -15,16 +15,40 @@ public interface BookingFacade {
 
     /**
      * Gets event by its id.
+     *
      * @return Event.
      */
     Event getEventById(long eventId);
 
     /**
+     * Gets ticket by its id.
+     *
+     * @return Event.
+     */
+    Ticket getTicketById(long ticketId);
+
+
+    /**
+     * Gets all users.
+     *
+     * @return List of users.
+     */
+    List<User> getAllUsers();
+
+    /**
+     * Gets all events.
+     *
+     * @return List of events.
+     */
+    List<Event> getAllEvents();
+
+    /**
      * Get list of events by matching title. Title is matched using 'contains' approach.
      * In case nothing was found, empty list is returned.
-     * @param title Event title or it's part.
+     *
+     * @param title    Event title or it's part.
      * @param pageSize Pagination param. Number of events to return on a page.
-     * @param pageNum Pagination param. Number of the page to return. Starts from 1.
+     * @param pageNum  Pagination param. Number of the page to return. Starts from 1.
      * @return List of events.
      */
     List<Event> getEventsByTitle(String title, int pageSize, int pageNum);
