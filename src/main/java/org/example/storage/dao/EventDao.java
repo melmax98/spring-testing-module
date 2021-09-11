@@ -8,6 +8,7 @@ import org.example.storage.DataSource;
 import org.joda.time.DateTimeComparator;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,9 @@ public class EventDao implements Dao {
         List<Entity> matchingEvents = getStorage().values()
                 .stream()
                 .filter(Event.class::isInstance)
-                .filter(event -> title.equals(((Event) event).getTitle()))
+                .map(Event.class::cast)
+                .filter(event -> title.equals(event.getTitle()))
+                .sorted(Comparator.comparing(Event::getEventId))
                 .collect(Collectors.toList());
 
         if (matchingEvents.isEmpty()) {
@@ -105,7 +108,9 @@ public class EventDao implements Dao {
         List<Entity> matchingEvents = getStorage().values()
                 .stream()
                 .filter(Event.class::isInstance)
-                .filter(event -> dateTimeComparator.compare(day, ((Event) event).getDate()) == 0)
+                .map(Event.class::cast)
+                .filter(event -> dateTimeComparator.compare(day, event.getDate()) == 0)
+                .sorted(Comparator.comparing(Event::getEventId))
                 .collect(Collectors.toList());
 
         if (matchingEvents.isEmpty()) {
