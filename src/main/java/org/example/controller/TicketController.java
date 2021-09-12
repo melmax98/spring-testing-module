@@ -92,7 +92,7 @@ public class TicketController {
     }
 
     @ResponseBody
-    @GetMapping("/preload")
+    @PostMapping("/preload")
     public String preloadTickets() throws IOException {
         bookingFacade.preloadTickets();
         return "Success";

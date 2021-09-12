@@ -13,10 +13,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -73,7 +76,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void createUserForm() throws Exception {
+    public void createUser() throws Exception {
         this.mockMvc.perform(post("/user")
                         .param("name", "America")
                         .param("email", "america!@#$%%^"))
@@ -84,5 +87,42 @@ public class UserControllerTest {
         User userByEmail = bookingFacade.getUserByEmail("america!@#$%%^");
         assertNotNull(userByEmail);
         assertTrue(bookingFacade.deleteUser(userByEmail.getUserId()));
+    }
+
+    @Test
+    public void updateUser() throws Exception {
+        User user = bookingFacade.createUser(new User("test", "testmail"));
+        this.mockMvc.perform(post("/user/update/" + user.getUserId())
+                        .param("name", "America")
+                        .param("email", "america!@#$%%^"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("userList"))
+                .andReturn();
+
+        User updatedUser = bookingFacade.getUserById(user.getUserId());
+        assertEquals("America", updatedUser.getName());
+        assertEquals("america!@#$%%^", updatedUser.getEmail());
+        assertTrue(bookingFacade.deleteUser(updatedUser.getUserId()));
+    }
+
+    @Test
+    public void deleteUser_userExists() throws Exception {
+        User user = bookingFacade.createUser(new User("test", "testmail"));
+        this.mockMvc.perform(post("/user/delete/" + user.getUserId()))
+                .andExpect(status().isOk())
+                .andExpect(content().string("User was successfully deleted"))
+                .andReturn();
+
+        assertNull(bookingFacade.getUserById(user.getUserId()));
+    }
+
+    @Test
+    public void deleteUser_userDoesNotExist() throws Exception {
+        this.mockMvc.perform(post("/user/delete/" + Integer.MAX_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(content().string("User was not deleted"))
+                .andReturn();
+
+        assertNull(bookingFacade.getUserById(Integer.MAX_VALUE));
     }
 }
