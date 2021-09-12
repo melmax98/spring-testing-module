@@ -10,6 +10,7 @@ import org.example.service.EventService;
 import org.example.service.TicketService;
 import org.example.service.UserService;
 import org.example.util.XMLConverter;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Date;
@@ -125,6 +126,7 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
+    @Transactional
     public void preloadTickets() {
         try {
             xmlConverter.xmlToObj();
