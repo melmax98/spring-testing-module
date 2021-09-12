@@ -4,12 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@XmlRootElement
+@XmlType(propOrder = {"eventId", "title", "date"})
 public class Event implements Entity {
 
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM dd, yyy");

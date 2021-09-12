@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tickets>
+    <ticket>
+        <event>
+            <title>title</title>
+            <date>1970-01-01</date>
+        </event>
+        <user>
+            <name>Max</name>
+            <email>mail.com</email>
+        </user>
+        <category>PREMIUM</category>
+        <placeNumber>10</placeNumber>
+    </ticket>
+    <ticket>
+        <event>
+            <title>title1</title>
+            <date>1970-01-01</date>
+        </event>
+        <user>
+            <name>pasha</name>
+            <email>ukraine.mail</email>
+        </user>
+        <category>BAR</category>
+        <placeNumber>11</placeNumber>
+    </ticket>
+    <ticket>
+        <event>
+            <title>title1</title>
+            <date>1970-01-01</date>
+        </event>
+        <user>
+            <name>zohan</name>
+            <email>kkk.mail</email>
+        </user>
+        <category>STANDARD</category>
+        <placeNumber>12</placeNumber>
+    </ticket>
+</tickets>

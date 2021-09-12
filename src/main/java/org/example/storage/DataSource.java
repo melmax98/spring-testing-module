@@ -39,7 +39,7 @@ public class DataSource {
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.contains("event") && line.contains("user")) {
                     Ticket ticket = gson.fromJson(line, Ticket.class);
-                    dataSaver.createTicket(ticket);
+                    dataSaver.createTicketIfUserAndEventExist(ticket);
                     log.info("Ticket from file was created.");
                 } else if (line.contains("name")) {
                     User user = gson.fromJson(line, User.class);

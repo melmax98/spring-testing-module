@@ -1,6 +1,7 @@
 package org.example.facade;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.Event;
 import org.example.model.Ticket;
 import org.example.model.TicketCategory;
@@ -8,16 +9,20 @@ import org.example.model.User;
 import org.example.service.EventService;
 import org.example.service.TicketService;
 import org.example.service.UserService;
+import org.example.util.XMLConverter;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 public class BookingFacadeImpl implements BookingFacade {
 
     private final EventService eventService;
     private final UserService userService;
     private final TicketService ticketService;
+    private final XMLConverter xmlConverter;
 
     @Override
     public Event getEventById(long eventId) {
@@ -117,5 +122,14 @@ public class BookingFacadeImpl implements BookingFacade {
     @Override
     public boolean cancelTicket(long ticketId) {
         return ticketService.cancelTicket(ticketId);
+    }
+
+    @Override
+    public void preloadTickets() {
+        try {
+            xmlConverter.xmlToObj();
+        } catch (IOException e) {
+            log.error("Error while preloading tickets from xml file", e);
+        }
     }
 }

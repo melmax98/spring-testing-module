@@ -15,7 +15,13 @@ public class DataSaver {
     private UserDao userDao;
     private TicketDao ticketDao;
 
-    public void createTicket(Ticket ticket) {
+    public void createTicketSaveUserAndEvent(Ticket ticket) {
+        userDao.save(ticket.getUser());
+        eventDao.save(ticket.getEvent());
+        ticketDao.save(ticket);
+    }
+
+    public void createTicketIfUserAndEventExist(Ticket ticket) {
         ticketDao.save(ticket);
     }
 

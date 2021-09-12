@@ -5,6 +5,7 @@ import org.example.model.Ticket;
 import org.example.model.TicketCategory;
 import org.example.model.User;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -168,9 +169,14 @@ public interface BookingFacade {
 
     /**
      * Cancel ticket with a specified id.
+     *
      * @param ticketId Ticket id.
      * @return Flag whether anything has been canceled.
      */
     boolean cancelTicket(long ticketId);
 
+    /**
+     * Loads data from XML file
+     */
+    void preloadTickets() throws IOException;
 }
