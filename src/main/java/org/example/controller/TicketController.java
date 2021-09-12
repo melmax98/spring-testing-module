@@ -2,6 +2,7 @@ package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.facade.BookingFacade;
+import org.example.model.Event;
 import org.example.model.Ticket;
 import org.example.model.TicketCategory;
 import org.example.model.User;
@@ -40,18 +41,18 @@ public class TicketController {
         return TICKETS_VIEW;
     }
 
-//    @GetMapping("/event/{id}")
-//    public String getBookedTicketsByEvent(@PathVariable Integer id,
-//                                          @RequestParam(name = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-//                                          @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
-//                                          Model model) {
-//
-//        Event event = bookingFacade.getEventById(id);
-//        List<Ticket> ticketsByEvent = bookingFacade.getBookedTickets(event, pageSize, pageNum);
-//        model.addAttribute(TICKETS_ATTRIBUTE, ticketsByEvent);
-//
-//        return TICKETS_VIEW;
-//    }
+    @GetMapping("/event/{id}")
+    public String getBookedTicketsByEvent(@PathVariable Integer id,
+                                          @RequestParam(name = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+                                          @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+                                          Model model) {
+
+        Event event = bookingFacade.getEventById(id);
+        List<Ticket> ticketsByEvent = bookingFacade.getBookedTickets(event, pageSize, pageNum);
+        model.addAttribute(TICKETS_ATTRIBUTE, ticketsByEvent);
+
+        return TICKETS_VIEW;
+    }
 
     @GetMapping("{id}")
     public String getTicketById(@PathVariable Integer id, Model model) {

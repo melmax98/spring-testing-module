@@ -9,6 +9,7 @@ import org.example.model.TicketCategory;
 import org.example.model.User;
 import org.example.storage.DataSource;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -85,7 +86,9 @@ public class TicketDao implements Dao {
         List<Entity> matchingTickets = getStorage().values()
                 .stream()
                 .filter(Ticket.class::isInstance)
-                .filter(ticket -> ((Ticket) ticket).getUser().equals(user))
+                .map(Ticket.class::cast)
+                .filter(ticket -> (ticket.getUser().equals(user)))
+                .sorted(Comparator.comparing(Ticket::getTicketId))
                 .collect(Collectors.toList());
 
         return getTicketsPage(pageSize, pageNum, matchingTickets);
@@ -95,7 +98,9 @@ public class TicketDao implements Dao {
         List<Entity> matchingTickets = getStorage().values()
                 .stream()
                 .filter(Ticket.class::isInstance)
-                .filter(ticket -> ((Ticket) ticket).getEvent().equals(event))
+                .map(Ticket.class::cast)
+                .filter(ticket -> (ticket.getEvent().equals(event)))
+                .sorted(Comparator.comparing(Ticket::getTicketId))
                 .collect(Collectors.toList());
 
         return getTicketsPage(pageSize, pageNum, matchingTickets);
