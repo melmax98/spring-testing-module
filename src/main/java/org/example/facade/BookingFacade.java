@@ -6,6 +6,7 @@ import org.example.model.TicketCategory;
 import org.example.model.User;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -178,5 +179,5 @@ public interface BookingFacade {
     /**
      * Loads data from XML file
      */
-    void preloadTickets() throws IOException;
+    void preloadTickets(InputStream inputStream) throws IOException;
 }

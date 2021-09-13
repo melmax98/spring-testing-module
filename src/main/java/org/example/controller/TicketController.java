@@ -6,6 +6,7 @@ import org.example.model.Event;
 import org.example.model.Ticket;
 import org.example.model.TicketCategory;
 import org.example.model.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +29,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TicketController {
     private final BookingFacade bookingFacade;
+
+    @Value("${data.xml.path}")
+    private String xmlFilePath;
 
     private static final String TICKETS_ATTRIBUTE = "tickets";
     private static final String TICKETS_VIEW = "ticketList";
@@ -93,8 +100,10 @@ public class TicketController {
 
     @ResponseBody
     @PostMapping("/preload")
-    public String preloadTickets() throws IOException {
-        bookingFacade.preloadTickets();
+    public String preloadTickets(@RequestParam("file") MultipartFile file) throws IOException {
+        byte[] byteArr = file.getBytes();
+        InputStream inputStream = new ByteArrayInputStream(byteArr);
+        bookingFacade.preloadTickets(inputStream);
         return "Success";
     }
 

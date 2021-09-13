@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.GenericXmlContextLoader;
@@ -15,15 +16,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.InputStream;
 import java.util.Date;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -124,9 +128,9 @@ public class TicketControllerTest {
     public void preloadTickets() throws Exception {
         BookingFacade spy = spy(BookingFacade.class);
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new TicketController(spy)).build();
-        doNothing().when(spy).preloadTickets();
+        doNothing().when(spy).preloadTickets(any(InputStream.class));
 
-        mockMvc.perform(post("/ticket/preload"))
+        mockMvc.perform(multipart("/ticket/preload").file(new MockMultipartFile("file", new byte[]{})))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Success"))
                 .andReturn();
