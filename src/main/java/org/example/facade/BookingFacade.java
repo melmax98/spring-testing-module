@@ -4,16 +4,42 @@ import org.example.model.Event;
 import org.example.model.Ticket;
 import org.example.model.TicketCategory;
 import org.example.model.User;
+import org.example.model.UserAccount;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Groups together all operations related to tickets booking.
+ * Groups together all operations related to ticket booking.
  */
 public interface BookingFacade {
+
+    /**
+     * Withdraws money from UserAccount
+     *
+     * @return Boolean - true is success, false if not
+     */
+    Boolean withdrawMoneyFromAccount(User user, Double amount);
+
+    /**
+     * Deletes user account by id
+     */
+    Boolean deleteUserAccount(long userAccountId);
+
+    /**
+     * Gets user balance.
+     *
+     * @return Double.
+     */
+    Double getBalanceByUser(User user);
+
+    /**
+     * Refill user account
+     *
+     * @return Boolean.
+     */
+    UserAccount refillAccount(User user, Double amount);
 
     /**
      * Gets event by its id.
@@ -58,15 +84,17 @@ public interface BookingFacade {
     /**
      * Get list of events for specified day.
      * In case nothing was found, empty list is returned.
-     * @param day Date object from which day information is extracted.
+     *
+     * @param day      Date object from which day information is extracted.
      * @param pageSize Pagination param. Number of events to return on a page.
-     * @param pageNum Pagination param. Number of the page to return. Starts from 1.
+     * @param pageNum  Pagination param. Number of the page to return. Starts from 1.
      * @return List of events.
      */
     List<Event> getEventsForDay(Date day, int pageSize, int pageNum);
 
     /**
      * Creates new event. Event id should be auto-generated.
+     *
      * @param event Event data.
      * @return Created Event object.
      */
@@ -74,6 +102,7 @@ public interface BookingFacade {
 
     /**
      * Updates event using given data.
+     *
      * @param event Event data for update. Should have id set.
      * @return Updated Event object.
      */
@@ -81,6 +110,7 @@ public interface BookingFacade {
 
     /**
      * Deletes event by its id.
+     *
      * @param eventId Event id.
      * @return Flag that shows whether event has been deleted.
      */
@@ -88,12 +118,14 @@ public interface BookingFacade {
 
     /**
      * Gets user by its id.
+     *
      * @return User.
      */
     User getUserById(long userId);
 
     /**
      * Gets user by its email. Email is strictly matched.
+     *
      * @return User.
      */
     User getUserByEmail(String email);
@@ -101,15 +133,17 @@ public interface BookingFacade {
     /**
      * Get list of users by matching name. Name is matched using 'contains' approach.
      * In case nothing was found, empty list is returned.
-     * @param name Users name or it's part.
+     *
+     * @param name     Users name or it's part.
      * @param pageSize Pagination param. Number of users to return on a page.
-     * @param pageNum Pagination param. Number of the page to return. Starts from 1.
+     * @param pageNum  Pagination param. Number of the page to return. Starts from 1.
      * @return List of users.
      */
     List<User> getUsersByName(String name, int pageSize, int pageNum);
 
     /**
      * Creates new user. User id should be auto-generated.
+     *
      * @param user User data.
      * @return Created User object.
      */
@@ -117,6 +151,7 @@ public interface BookingFacade {
 
     /**
      * Updates user using given data.
+     *
      * @param user User data for update. Should have id set.
      * @return Updated User object.
      */
@@ -152,18 +187,20 @@ public interface BookingFacade {
 
     /**
      * Get all booked tickets for specified user. Tickets should be sorted by event date in descending order.
-     * @param user User
+     *
+     * @param user     User
      * @param pageSize Pagination param. Number of tickets to return on a page.
-     * @param pageNum Pagination param. Number of the page to return. Starts from 1.
+     * @param pageNum  Pagination param. Number of the page to return. Starts from 1.
      * @return List of Ticket objects.
      */
     List<Ticket> getBookedTickets(User user, int pageSize, int pageNum);
 
     /**
      * Get all booked tickets for specified event. Tickets should be sorted in by user email in ascending order.
-     * @param event Event
+     *
+     * @param event    Event
      * @param pageSize Pagination param. Number of tickets to return on a page.
-     * @param pageNum Pagination param. Number of the page to return. Starts from 1.
+     * @param pageNum  Pagination param. Number of the page to return. Starts from 1.
      * @return List of Ticket objects.
      */
     List<Ticket> getBookedTickets(Event event, int pageSize, int pageNum);
@@ -179,5 +216,5 @@ public interface BookingFacade {
     /**
      * Loads data from XML file
      */
-    void preloadTickets(InputStream inputStream) throws IOException;
+    void preloadTickets(InputStream inputStream);
 }

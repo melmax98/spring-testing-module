@@ -6,9 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.GenericXmlContextLoader;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -26,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring.xml"}, loader = GenericXmlContextLoader.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class EventControllerTest {
 
     private MockMvc mockMvc;
@@ -95,7 +94,7 @@ public class EventControllerTest {
 
     @Test
     public void updateEvent() throws Exception {
-        Event event = bookingFacade.createEvent(new Event("test", new Date(1)));
+        Event event = bookingFacade.createEvent(new Event("test", new Date(1), 0));
         this.mockMvc.perform(post("/event/update/" + event.getEventId())
                         .param("title", "America")
                         .param("date", "Sep 10, 2099"))
@@ -111,7 +110,7 @@ public class EventControllerTest {
 
     @Test
     public void deleteEvent_eventExists() throws Exception {
-        Event event = bookingFacade.createEvent(new Event("test", new Date(1)));
+        Event event = bookingFacade.createEvent(new Event("test", new Date(1), 0));
         this.mockMvc.perform(post("/event/delete/" + event.getEventId()))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Event was successfully deleted"))

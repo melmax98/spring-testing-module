@@ -6,13 +6,14 @@ import org.example.model.Event;
 import org.example.model.Ticket;
 import org.example.model.TicketCategory;
 import org.example.model.User;
+import org.example.model.UserAccount;
 import org.example.service.EventService;
 import org.example.service.TicketService;
+import org.example.service.UserAccountService;
 import org.example.service.UserService;
 import org.example.util.XMLConverter;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,27 @@ public class BookingFacadeImpl implements BookingFacade {
     private final UserService userService;
     private final TicketService ticketService;
     private final XMLConverter xmlConverter;
+    private final UserAccountService userAccountService;
+
+    @Override
+    public Boolean withdrawMoneyFromAccount(User user, Double amount) {
+        return userAccountService.withdrawMoneyFromAccount(user, amount);
+    }
+
+    @Override
+    public Boolean deleteUserAccount(long userAccountId) {
+        return userAccountService.deleteUserAccount(userAccountId);
+    }
+
+    @Override
+    public Double getBalanceByUser(User user) {
+        return userAccountService.getBalanceByUser(user);
+    }
+
+    @Override
+    public UserAccount refillAccount(User user, Double amount) {
+        return userAccountService.refillAccount(user, amount);
+    }
 
     @Override
     public Event getEventById(long eventId) {
@@ -131,7 +153,7 @@ public class BookingFacadeImpl implements BookingFacade {
     public void preloadTickets(InputStream inputStream) {
         try {
             xmlConverter.xmlToObj(inputStream);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Error while preloading tickets from xml file", e);
         }
     }

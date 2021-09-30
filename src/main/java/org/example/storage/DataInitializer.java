@@ -2,10 +2,8 @@ package org.example.storage;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.example.model.Entity;
 import org.example.model.Event;
 import org.example.model.Ticket;
 import org.example.model.User;
@@ -15,20 +13,15 @@ import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
-public class DataSource {
+public class DataInitializer {
 
     @Value("${data.filepath}")
     private String dataFilePath;
 
     @Setter
     private DataSaver dataSaver;
-
-    @Getter
-    private final Map<String, Entity> storage = new HashMap<>();
 
     @PostConstruct
     private void init() {
