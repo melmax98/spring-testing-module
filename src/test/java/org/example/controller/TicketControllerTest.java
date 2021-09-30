@@ -4,14 +4,14 @@ import org.example.facade.BookingFacade;
 import org.example.model.Event;
 import org.example.model.Ticket;
 import org.example.model.User;
+import org.example.model.UserAccount;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.GenericXmlContextLoader;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -33,8 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring.xml"}, loader = GenericXmlContextLoader.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class TicketControllerTest {
 
     private MockMvc mockMvc;
@@ -78,7 +78,9 @@ public class TicketControllerTest {
     @Test
     public void bookTicket() throws Exception {
         User user = bookingFacade.createUser(new User("test", "testmail"));
-        Event event = bookingFacade.createEvent(new Event("test", new Date(1)));
+        Event event = bookingFacade.createEvent(new Event("test", new Date(1), 1000));
+        UserAccount userAccount = bookingFacade.refillAccount(user, 1001.0);
+
         this.mockMvc.perform(post("/ticket")
                         .param("userId", String.valueOf(user.getUserId()))
                         .param("eventId", String.valueOf(event.getEventId()))
@@ -89,10 +91,15 @@ public class TicketControllerTest {
                 .andReturn();
 
         Ticket ticket = bookingFacade.getBookedTickets(user, 1, 1).iterator().next();
+
+        assertEquals(1, bookingFacade.getBalanceByUser(user));
+        assertTrue(bookingFacade.deleteUserAccount(userAccount.getUserAccountId()));
         assertNotNull(ticket);
         assertEquals(ticket.getUser(), user);
-        assertEquals(ticket.getEvent(), event);
         assertTrue(bookingFacade.cancelTicket(ticket.getTicketId()));
+        assertTrue(bookingFacade.deleteUser(user.getUserId()));
+        assertTrue(bookingFacade.deleteEvent(event.getEventId()));
+        assertNull(bookingFacade.getTicketById(ticket.getTicketId()));
     }
 
     @Test

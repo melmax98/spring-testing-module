@@ -29,40 +29,32 @@
           p:dataSaver-ref="dataSaver"
     />
 
-    <bean id="dataSource" class="org.example.storage.DataSource"
+    <bean id="dataInitializer" class="org.example.storage.DataInitializer"
           p:dataSaver-ref="dataSaver"
     />
 
     <bean id="dataSaver" class="org.example.storage.DataSaver"
-          p:userDao-ref="userDao"
-          p:eventDao-ref="eventDao"
-          p:ticketDao-ref="ticketDao"
-    />
-
-    <bean id="eventDao" depends-on="dataSource" class="org.example.storage.dao.EventDao"
-          p:dataSource-ref="dataSource"
+          p:userRepository-ref="userRepository"
+          p:eventRepository-ref="eventRepository"
+          p:ticketRepository-ref="ticketRepository"
     />
 
     <bean id="eventService"
           class="org.example.service.impl.EventServiceImpl"
     />
 
-    <bean id="userDao" class="org.example.storage.dao.UserDao"
-          p:dataSource-ref="dataSource"
-    />
-
     <bean id="userService"
           class="org.example.service.impl.UserServiceImpl"
     />
 
-    <bean id="ticketDao"
-          class="org.example.storage.dao.TicketDao"
-          p:dataSource-ref="dataSource"
+    <bean id="userAccountService"
+          class="org.example.service.impl.UserAccountServiceImpl"
     />
 
     <bean id="ticketService" class="org.example.service.impl.TicketServiceImpl"
           p:userService-ref="userService"
           p:eventService-ref="eventService"
+          p:userAccountService-ref="userAccountService"
     />
 
     <bean id="bookingFacade" class="org.example.facade.BookingFacadeImpl"
@@ -70,5 +62,6 @@
           c:userService-ref="userService"
           c:ticketService-ref="ticketService"
           c:xmlConverter-ref="xmlConverter"
+          c:userAccountService-ref="userAccountService"
     />
 </beans>
