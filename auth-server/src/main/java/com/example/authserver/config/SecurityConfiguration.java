@@ -1,6 +1,7 @@
 package com.example.authserver.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.example.authserver.service.AdminService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -11,12 +12,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @Order(1)
+@RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Value("${user.oauth.user.username}")
-    private String username;
-    @Value("${user.oauth.user.password}")
-    private String password;
+    private final AdminService adminService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -31,10 +30,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser(username)
-                .password(passwordEncoder().encode(password))
-                .roles("USER");
+        auth
+                .userDetailsService(adminService)
+                .passwordEncoder(passwordEncoder());
     }
 
     @Bean
