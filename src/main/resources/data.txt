@@ -1,1 +1,1 @@
-Insert here data in json format, and it will load to db on application startup
+//Insert here data in json format, and it will load to db on application startup

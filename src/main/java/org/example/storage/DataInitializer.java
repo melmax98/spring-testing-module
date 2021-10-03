@@ -30,6 +30,9 @@ public class DataInitializer {
         try (FileReader reader = new FileReader(dataFilePath); BufferedReader bufferedReader = new BufferedReader(reader)) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
+                if (line.startsWith("//")) {
+                    continue;
+                }
                 if (line.contains("event") && line.contains("user")) {
                     Ticket ticket = gson.fromJson(line, Ticket.class);
                     dataSaver.createTicketIfUserAndEventExist(ticket);
