@@ -38,10 +38,13 @@ spring:
       ddl-auto: validate
     show-sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/booking-local
+    url: jdbc:mysql://localhost:3306/booking-dev
     username: root
     password: 1111
     driver-class-name: com.mysql.cj.jdbc.Driver
+  config:
+    activate:
+      on-profile: dev
 
 hibernate:
   dialect: org.hibernate.dialect.MySQLDialect
