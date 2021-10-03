@@ -1,5 +1,6 @@
 package org.example.facade;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.Event;
@@ -64,6 +65,7 @@ public class BookingFacadeImpl implements BookingFacade {
     }
 
     @Override
+    @Timed(value = "getAllEvents.time", description = "Time taken to return all events")
     public List<Event> getAllEvents() {
         return eventService.getAllEvents();
     }

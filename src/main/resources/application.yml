@@ -47,5 +47,9 @@ management:
   endpoint:
     health:
       show-details: "when_authorized"
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 hibernate:
   dialect: org.hibernate.dialect.MySQLDialect
