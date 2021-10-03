@@ -43,5 +43,9 @@ spring:
     password: 1111
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+management:
+  endpoint:
+    health:
+      show-details: "when_authorized"
 hibernate:
   dialect: org.hibernate.dialect.MySQLDialect
