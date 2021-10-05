@@ -216,5 +216,5 @@ public interface BookingFacade {
     /**
      * Loads data from XML file
      */
-    void preloadTickets(InputStream inputStream);
+    Boolean preloadTickets(InputStream inputStream);
 }

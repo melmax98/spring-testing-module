@@ -152,11 +152,13 @@ public class BookingFacadeImpl implements BookingFacade {
 
     @Override
     @Transactional
-    public void preloadTickets(InputStream inputStream) {
+    public Boolean preloadTickets(InputStream inputStream) {
         try {
             xmlConverter.xmlToObj(inputStream);
+            return true;
         } catch (Exception e) {
             log.error("Error while preloading tickets from xml file", e);
+            return false;
         }
     }
 }

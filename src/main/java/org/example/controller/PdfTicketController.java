@@ -10,17 +10,17 @@ import org.example.util.PdfCreator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/ticket")
 public class PdfTicketController {
@@ -28,7 +28,6 @@ public class PdfTicketController {
     private final BookingFacade bookingFacade;
     private final PdfCreator pdfCreator;
 
-    @ResponseBody
     @GetMapping(value = "/user/{id}", headers = "accept=application/pdf", produces = "application/pdf")
     public ResponseEntity<byte[]> getBookedTicketsByUser(@PathVariable Integer id,
                                                          @RequestParam(name = "pageNum", required = false, defaultValue = "1") Integer pageNum,
