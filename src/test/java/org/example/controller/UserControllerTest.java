@@ -1,5 +1,7 @@
 package org.example.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.example.facade.BookingFacade;
 import org.example.model.User;
 import org.junit.Before;
@@ -9,18 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -34,82 +35,78 @@ public class UserControllerTest {
     @Autowired
     private BookingFacade bookingFacade;
 
+    private static final Gson GSON = new GsonBuilder().create();
+
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
 
     @Test
-    public void createUserViewTest() throws Exception {
-        this.mockMvc.perform(get("/user/new"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("createUser"))
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn();
-    }
-
-    @Test
     public void getUsersByNameTest() throws Exception {
+        List<User> users = Collections.singletonList(bookingFacade.createUser(new User("test", "testmail")));
+        String jsonResult = GSON.toJson(users);
+
         this.mockMvc.perform(get("/user/name/test"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("userList"))
+                .andExpect(content().json(jsonResult))
                 .andReturn();
+
+        assertTrue(bookingFacade.deleteUser(users.iterator().next().getUserId()));
     }
 
     @Test
     public void getUsersByEmailTest() throws Exception {
         User user = bookingFacade.createUser(new User("test", "testmail"));
+        String jsonResult = GSON.toJson(user);
+
         this.mockMvc.perform(get("/user/email/testmail"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("userList"))
+                .andExpect(content().json(jsonResult))
                 .andReturn();
-        bookingFacade.deleteUser(user.getUserId());
-    }
 
-    @Test
-    public void getUserEditForm() throws Exception {
-        this.mockMvc.perform(get("/user/1"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("userEdit"))
-                .andReturn();
+        assertTrue(bookingFacade.deleteUser(user.getUserId()));
     }
 
     @Test
     public void createUser() throws Exception {
+        User user = bookingFacade.createUser(new User("America", "america!@#$%%^"));
+        user.setUserId(user.getUserId() + 1);
+        String jsonResult = GSON.toJson(user);
+
         this.mockMvc.perform(post("/user")
-                        .param("name", "America")
-                        .param("email", "america!@#$%%^"))
+                        .param("name", user.getName())
+                        .param("email", user.getEmail()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("userList"))
+                .andExpect(content().json(jsonResult))
                 .andReturn();
 
-        User userByEmail = bookingFacade.getUserByEmail("america!@#$%%^");
-        assertNotNull(userByEmail);
-        assertTrue(bookingFacade.deleteUser(userByEmail.getUserId()));
+        assertTrue(bookingFacade.deleteUser(user.getUserId()));
     }
 
     @Test
     public void updateUser() throws Exception {
         User user = bookingFacade.createUser(new User("test", "testmail"));
+        User updatedUser = new User(user.getUserId(), "America", "america!@#$%%^");
+        String jsonResult = GSON.toJson(updatedUser);
+
         this.mockMvc.perform(post("/user/update/" + user.getUserId())
                         .param("name", "America")
                         .param("email", "america!@#$%%^"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("userList"))
+                .andExpect(content().json(jsonResult))
                 .andReturn();
 
-        User updatedUser = bookingFacade.getUserById(user.getUserId());
-        assertEquals("America", updatedUser.getName());
-        assertEquals("america!@#$%%^", updatedUser.getEmail());
         assertTrue(bookingFacade.deleteUser(updatedUser.getUserId()));
     }
 
     @Test
     public void deleteUser_userExists() throws Exception {
         User user = bookingFacade.createUser(new User("test", "testmail"));
+
         this.mockMvc.perform(post("/user/delete/" + user.getUserId()))
                 .andExpect(status().isOk())
-                .andExpect(content().string("User was successfully deleted"))
+                .andExpect(content().string("true"))
                 .andReturn();
 
         assertNull(bookingFacade.getUserById(user.getUserId()));
@@ -119,7 +116,7 @@ public class UserControllerTest {
     public void deleteUser_userDoesNotExist() throws Exception {
         this.mockMvc.perform(post("/user/delete/" + Integer.MAX_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(content().string("User was not deleted"))
+                .andExpect(content().string("false"))
                 .andReturn();
 
         assertNull(bookingFacade.getUserById(Integer.MAX_VALUE));
