@@ -1,8 +1,10 @@
 package org.example.controller;
 
+import com.google.gson.Gson;
 import org.example.facade.BookingFacade;
 import org.example.model.Event;
 import org.example.model.Ticket;
+import org.example.model.TicketCategory;
 import org.example.model.User;
 import org.example.model.UserAccount;
 import org.junit.Before;
@@ -13,25 +15,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -45,6 +47,9 @@ public class TicketControllerTest {
     @Autowired
     private BookingFacade bookingFacade;
 
+    @Autowired
+    private Gson gson;
+
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(ticketController).build();
@@ -52,27 +57,53 @@ public class TicketControllerTest {
 
     @Test
     public void getBookedTicketsByUser() throws Exception {
-        this.mockMvc.perform(get("/ticket/user/1"))
+        User user = bookingFacade.createUser(new User());
+        Event event = bookingFacade.createEvent(new Event("title", new Date(), 0));
+        UserAccount userAccount = bookingFacade.refillAccount(user, 1.0);
+        List<Ticket> tickets = Collections.singletonList(bookingFacade.bookTicket(user.getUserId(), event.getEventId(), 1, TicketCategory.STANDARD));
+        String jsonResult = gson.toJson(tickets);
+
+        this.mockMvc.perform(get("/ticket/user/" + user.getUserId()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("ticketList"))
-                .andDo(MockMvcResultHandlers.print())
+                .andExpect(content().json(jsonResult))
                 .andReturn();
+
+        assertTrue(bookingFacade.deleteUserAccount(userAccount.getUserAccountId()));
+        assertTrue(bookingFacade.cancelTicket(tickets.iterator().next().getTicketId()));
+        assertTrue(bookingFacade.deleteEvent(event.getEventId()));
+        assertTrue(bookingFacade.deleteUser(user.getUserId()));
     }
 
     @Test
     public void getBookedTicketsByEvent() throws Exception {
-        this.mockMvc.perform(get("/ticket/event/1"))
+        User user = bookingFacade.createUser(new User());
+        Event event = bookingFacade.createEvent(new Event("title", new Date(), 0));
+        UserAccount userAccount = bookingFacade.refillAccount(user, 1.0);
+        List<Ticket> tickets = Collections.singletonList(bookingFacade.bookTicket(user.getUserId(), event.getEventId(), 1, TicketCategory.STANDARD));
+        String jsonResult = gson.toJson(tickets);
+
+        this.mockMvc.perform(get("/ticket/event/" + event.getEventId()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("ticketList"))
+                .andExpect(content().json(jsonResult))
                 .andReturn();
+
+        assertTrue(bookingFacade.deleteUserAccount(userAccount.getUserAccountId()));
+        assertTrue(bookingFacade.cancelTicket(tickets.iterator().next().getTicketId()));
+        assertTrue(bookingFacade.deleteEvent(event.getEventId()));
+        assertTrue(bookingFacade.deleteUser(user.getUserId()));
     }
 
     @Test
-    public void getBookedTicketsById() throws Exception {
-        this.mockMvc.perform(get("/ticket/1"))
+    public void getBookedTicketById() throws Exception {
+        Ticket ticket = bookingFacade.createTicket(new Ticket());
+        String jsonResult = gson.toJson(ticket);
+
+        this.mockMvc.perform(get("/ticket/" + ticket.getTicketId()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("ticketCancel"))
+                .andExpect(content().json(jsonResult))
                 .andReturn();
+
+        assertTrue(bookingFacade.cancelTicket(ticket.getTicketId()));
     }
 
     @Test
@@ -87,7 +118,6 @@ public class TicketControllerTest {
                         .param("categoryName", "BAR")
                         .param("place", "3"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("ticketList"))
                 .andReturn();
 
         Ticket ticket = bookingFacade.getBookedTickets(user, 1, 1).iterator().next();
@@ -107,7 +137,7 @@ public class TicketControllerTest {
         Ticket ticket = bookingFacade.createTicket(new Ticket());
         this.mockMvc.perform(post("/ticket/cancel/" + ticket.getTicketId()))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Ticket was successfully canceled"))
+                .andExpect(content().string("true"))
                 .andReturn();
 
         assertNull(bookingFacade.getTicketById(ticket.getTicketId()));
@@ -117,29 +147,21 @@ public class TicketControllerTest {
     public void cancelTicket_doesNotExist() throws Exception {
         this.mockMvc.perform(post("/ticket/cancel/" + Integer.MAX_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Ticket was not canceled"))
+                .andExpect(content().string("false"))
                 .andReturn();
 
         assertNull(bookingFacade.getTicketById(Integer.MAX_VALUE));
     }
 
     @Test
-    public void bookTicketForm() throws Exception {
-        this.mockMvc.perform(get("/ticket/new"))
-                .andExpect(view().name("bookTicket"))
-                .andExpect(status().isOk())
-                .andReturn();
-    }
-
-    @Test
     public void preloadTickets() throws Exception {
-        BookingFacade spy = spy(BookingFacade.class);
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new TicketController(spy)).build();
-        doNothing().when(spy).preloadTickets(any(InputStream.class));
+        BookingFacade bookingFacade = spy(BookingFacade.class);
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new TicketController(bookingFacade)).build();
+        when(bookingFacade.preloadTickets(any(InputStream.class))).thenReturn(true);
 
         mockMvc.perform(multipart("/ticket/preload").file(new MockMultipartFile("file", new byte[]{})))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Success"))
+                .andExpect(content().string("true"))
                 .andReturn();
     }
 }

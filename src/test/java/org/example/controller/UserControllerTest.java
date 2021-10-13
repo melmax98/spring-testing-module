@@ -14,8 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -70,18 +72,17 @@ public class UserControllerTest {
 
     @Test
     public void createUser() throws Exception {
-        User user = bookingFacade.createUser(new User("America", "america!@#$%%^"));
-        user.setUserId(user.getUserId() + 1);
-        String jsonResult = GSON.toJson(user);
-
         this.mockMvc.perform(post("/user")
-                        .param("name", user.getName())
-                        .param("email", user.getEmail()))
+                        .param("name", "America")
+                        .param("email", "america!@#$%%^"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(jsonResult))
                 .andReturn();
 
-        assertTrue(bookingFacade.deleteUser(user.getUserId()));
+        User createdUser = bookingFacade.getAllUsers().stream().max(Comparator.comparing(User::getUserId)).orElseThrow(NullPointerException::new);
+
+        assertEquals("America", createdUser.getName());
+        assertEquals("america!@#$%%^", createdUser.getEmail());
+        assertTrue(bookingFacade.deleteUser(createdUser.getUserId()));
     }
 
     @Test

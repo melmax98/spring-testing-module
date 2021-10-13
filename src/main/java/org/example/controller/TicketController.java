@@ -6,6 +6,7 @@ import org.example.model.Event;
 import org.example.model.Ticket;
 import org.example.model.TicketCategory;
 import org.example.model.User;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +27,7 @@ import java.util.List;
 public class TicketController {
     private final BookingFacade bookingFacade;
 
-    @GetMapping("/user/{id}")
+    @GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Ticket> getBookedTicketsByUser(@PathVariable Integer id,
                                                @RequestParam(name = "pageNum", required = false, defaultValue = "1") Integer pageNum,
                                                @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
@@ -35,7 +36,7 @@ public class TicketController {
         return bookingFacade.getBookedTickets(user, pageSize, pageNum);
     }
 
-    @GetMapping("/event/{id}")
+    @GetMapping(value = "/event/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Ticket> getBookedTicketsByEvent(@PathVariable Integer id,
                                                 @RequestParam(name = "pageNum", required = false, defaultValue = "1") Integer pageNum,
                                                 @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
@@ -44,18 +45,17 @@ public class TicketController {
         return bookingFacade.getBookedTickets(event, pageSize, pageNum);
     }
 
-    @GetMapping("{id}")
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Ticket getTicketById(@PathVariable Integer id) {
         return bookingFacade.getTicketById(id);
     }
 
-    @ResponseBody
-    @PostMapping("/cancel/{ticketId}")
+    @PostMapping(value = "/cancel/{ticketId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Boolean cancelTicket(@PathVariable Integer ticketId) {
         return bookingFacade.cancelTicket(ticketId);
     }
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Ticket bookTicket(@RequestParam Integer userId,
                              @RequestParam Integer eventId,
                              @RequestParam Integer place,
@@ -64,7 +64,7 @@ public class TicketController {
     }
 
     @ResponseBody
-    @PostMapping("/preload")
+    @PostMapping(value = "/preload", produces = MediaType.APPLICATION_JSON_VALUE)
     public Boolean preloadTickets(@RequestParam("file") MultipartFile file) throws IOException {
         byte[] byteArr = file.getBytes();
         InputStream inputStream = new ByteArrayInputStream(byteArr);

@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import com.google.gson.Gson;
 import org.example.facade.BookingFacade;
 import org.example.model.Event;
 import org.junit.Before;
@@ -9,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -23,13 +25,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class EventControllerTest {
 
     private MockMvc mockMvc;
+
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+    @Autowired
+    private Gson gson;
 
     @Autowired
     private EventController eventController;
@@ -45,45 +51,39 @@ public class EventControllerTest {
     }
 
     @Test
-    public void createEventViewTest() throws Exception {
-        this.mockMvc.perform(get("/event/new"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("createEvent"))
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn();
-    }
-
-    @Test
     public void getEventsByTitleTest() throws Exception {
+        List<Event> events = Collections.singletonList(bookingFacade.createEvent(new Event("test", new Date(), 1)));
+        String jsonResult = gson.toJson(events);
+
         this.mockMvc.perform(get("/event/title/test"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("eventList"))
+                .andExpect(content().json(jsonResult))
                 .andReturn();
+
+        assertTrue(bookingFacade.deleteEvent(events.iterator().next().getEventId()));
     }
 
     @Test
     public void getEventsByDateTest() throws Exception {
+        Date date = SIMPLE_DATE_FORMAT.parse("2099-10-14");
+        List<Event> events = Collections.singletonList(bookingFacade.createEvent(new Event("test", date, 1)));
+        String resultJson = gson.toJson(events);
+
         this.mockMvc.perform(get("/event/date/2099-10-14"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("eventList"))
+                .andExpect(content().json(resultJson))
                 .andReturn();
-    }
 
-    @Test
-    public void getEventEditForm() throws Exception {
-        this.mockMvc.perform(get("/event/1"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("eventEdit"))
-                .andReturn();
+        assertTrue(bookingFacade.deleteEvent(events.iterator().next().getEventId()));
     }
 
     @Test
     public void createEvent() throws Exception {
         this.mockMvc.perform(post("/event")
                         .param("title", "America")
-                        .param("date", "Sep 10, 2099"))
+                        .param("date", "Sep 10, 2099")
+                        .param("ticketPrice", "1"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("eventList"))
                 .andReturn();
 
         Event createdEvent = bookingFacade.getAllEvents().stream().max(Comparator.comparing(Event::getEventId)).orElseThrow(NullPointerException::new);
@@ -95,11 +95,12 @@ public class EventControllerTest {
     @Test
     public void updateEvent() throws Exception {
         Event event = bookingFacade.createEvent(new Event("test", new Date(1), 0));
+
         this.mockMvc.perform(post("/event/update/" + event.getEventId())
                         .param("title", "America")
-                        .param("date", "Sep 10, 2099"))
+                        .param("date", "Sep 10, 2099")
+                        .param("ticketPrice", "1"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("eventList"))
                 .andReturn();
 
         Event updatedEvent = bookingFacade.getEventById(event.getEventId());
@@ -113,7 +114,7 @@ public class EventControllerTest {
         Event event = bookingFacade.createEvent(new Event("test", new Date(1), 0));
         this.mockMvc.perform(post("/event/delete/" + event.getEventId()))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Event was successfully deleted"))
+                .andExpect(content().string("true"))
                 .andReturn();
 
         assertNull(bookingFacade.getEventById(event.getEventId()));
@@ -123,7 +124,7 @@ public class EventControllerTest {
     public void deleteEvent_eventDoesNotExist() throws Exception {
         this.mockMvc.perform(post("/event/delete/" + Integer.MAX_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Event was not deleted"))
+                .andExpect(content().string("false"))
                 .andReturn();
 
         assertNull(bookingFacade.getEventById(Integer.MAX_VALUE));

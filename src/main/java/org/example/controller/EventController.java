@@ -3,6 +3,7 @@ package org.example.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.facade.BookingFacade;
 import org.example.model.Event;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,14 +25,14 @@ public class EventController {
 
     private final BookingFacade bookingFacade;
 
-    @GetMapping("/title/{title}")
+    @GetMapping(value = "/title/{title}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Event> getEventByName(@PathVariable String title,
                                       @RequestParam(name = "pageNum", required = false, defaultValue = "1") Integer pageNum,
                                       @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
         return bookingFacade.getEventsByTitle(title, pageSize, pageNum);
     }
 
-    @GetMapping("/date/{date}")
+    @GetMapping(value = "/date/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Event> getEventsForDay(@PathVariable String date,
                                        @RequestParam(name = "pageNum", required = false, defaultValue = "1") Integer pageNum,
                                        @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
@@ -40,12 +41,12 @@ public class EventController {
         return bookingFacade.getEventsForDay(parsedDate, pageSize, pageNum);
     }
 
-    @GetMapping("{id}")
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Event getEventById(@PathVariable Integer id) {
         return bookingFacade.getEventById(id);
     }
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Event createEvent(@RequestParam(required = false) String title,
                              @RequestParam(required = false) String date,
                              @RequestParam(required = false) Double ticketPrice
@@ -55,7 +56,7 @@ public class EventController {
         return bookingFacade.createEvent(new Event(title, parsedDate, ticketPrice));
     }
 
-    @PostMapping("/update/{eventId}")
+    @PostMapping(value = "/update/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Event updateEvent(@RequestParam(required = false) String title,
                              @RequestParam(required = false) String date,
                              @RequestParam(required = false) Double ticketPrice,
@@ -71,7 +72,7 @@ public class EventController {
     }
 
     @ResponseBody
-    @PostMapping("/delete/{eventId}")
+    @PostMapping(value = "/delete/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Boolean deleteEvent(@PathVariable Integer eventId) {
         return bookingFacade.deleteEvent(eventId);
     }
