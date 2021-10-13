@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 import java.util.Date;
 
 @Getter
@@ -19,7 +20,9 @@ import java.util.Date;
 @XmlRootElement
 @XmlType(propOrder = {"eventId", "title", "date", "ticketPrice"})
 @Entity
-public class Event {
+public class Event implements Serializable {
+
+    private static final long serialVersionUID = -1409930502963795321L;
 
     public Event(String title, Date date, double ticketPrice) {
         this.title = title;

@@ -15,6 +15,7 @@ import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 
 @Setter
 @AllArgsConstructor
@@ -22,7 +23,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement
 @XmlType(propOrder = {"ticketId", "event", "user", "category", "placeNumber"})
 @Entity
-public class Ticket {
+public class Ticket implements Serializable {
+
+    private static final long serialVersionUID = 1846226795597524566L;
 
     public Ticket(Event event, User user, TicketCategory category, int placeNumber) {
         this.event = event;
