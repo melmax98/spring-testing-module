@@ -1,5 +1,5 @@
 data:
-  filepath: src/main/resources/data.txt
+  filepath: main/src/main/resources/data.txt
   pdf:
     output:
       path: output/tickets.pdf
